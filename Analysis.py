@@ -23,19 +23,29 @@ def read_float_list_from_csv(filename):
 
     return float_list
 
-filename='Len_dist_b1_L51_p100.csv'
-float_list =read_float_list_from_csv(filename)
+filename0='Len_dist_bc_1000_L51_p100.csv'
+filename1='Len_dist_bc_2000_L51_p100.csv'
 
-n=17
+float_list0 =read_float_list_from_csv(filename0)
+float_list1 =read_float_list_from_csv(filename1)
+
+nc,n1=24,599
 v=500
-N=1000
+N,N1=1000,2000
 
-D=[]
-for i in range(n):
+D0_=[]
+for i in range(nc):
     D_0=[]
     for j in range(i*v, (i+1)*v):
-        D_0.append(float_list[j])
-    D.append(D_0)
+        D_0.append(float_list0[j])
+    D0_.append(D_0)
+
+D1_=[]
+for i in range(n1):
+    D1_0=[]
+    for j in range(i*v, (i+1)*v):
+        D1_0.append(float_list1[j])
+    D1_.append(D1_0)
 
 def count_elements(sorted_list, N):
     # Count occurrences of each element in the list
@@ -49,22 +59,30 @@ def count_elements(sorted_list, N):
     return result
 
 D0=[]
-for i in range(n):
-   Count_dist=count_elements(D[i], N)
+for i in range(nc):
+   Count_dist=count_elements(D0_[i], N)
    D0.append(Count_dist)
 
+D1=[]
+for i in range(n1):
+   Count_dist=count_elements(D1_[i], N1)
+   D1.append(Count_dist)
+
 A_=np.sum(D0, axis=0)
-A=[a/n/N for a in A_]
+A=[a/nc/N for a in A_]
 
+A1_=np.sum(D1, axis=0)
+A1=[a/n1/N1 for a in A1_]
 
-Len=[i+1 for i in range(N)]
+Len=[i for i in range(-1,N+1)]
+Len1=[i for i in range(-1,N1+1)]
 
-l1,l2=786,904
+l1,l2=954,985
 
 def fg(x,a,b,s):
     return np.log(b)-((x-a)/s)**2
 
-# A_log=[np.log(vals) for vals in A[l1+2:l2+2]]
+# A_log=[np.log(vals) for vals in A[l1:l2]]
 
 # popt=curve_fit(fg, Len[l1:l2], A_log)[0]
 # a0,b0,s0=popt[0],popt[1],popt[2]
@@ -72,11 +90,12 @@ def fg(x,a,b,s):
 # X=np.linspace(l1,l2,1000)
 # Fit=[b0*np.exp(-((x-a0)/s0)**2) for x in X]
 
-O1=[0 for v in Len[0:N]]
+O1=[0 for v in Len1]
 
-plt.plot(Len[0:N], A[2:N+2], 'rd')
-# plt.plot(X, Fit, 'b', linewidth='3')
-plt.plot(Len[0:N], O1, 'g', linewidth='3')
+plt.plot(Len[2:], A[2:], 'rd')
+plt.plot(Len1[2:], A1[2:], 'bd')
+# plt.plot(X, Fit, 'g', linewidth='3')
+plt.plot(Len1, O1, 'g', linewidth='3')
 plt.show()
 
 
