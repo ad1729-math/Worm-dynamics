@@ -23,15 +23,18 @@ def read_float_list_from_csv(filename):
 
     return float_list
 
-filename0='Len_dist_bc_1000_L51_p100.csv'
-filename1='Len_dist_bc_2000_L51_p100.csv'
+def FD(x):
+    return np.log(x)
+
+filename0='Len_dist_bc_2000_L51_p100.csv'
+filename1='Len_dist_bc_2000_L51_p50.csv'
 
 float_list0 =read_float_list_from_csv(filename0)
 float_list1 =read_float_list_from_csv(filename1)
 
-nc,n1=24,599
+nc,n1=599,341
 v=500
-N,N1=1000,2000
+N,N1=2000,5000
 
 D0_=[]
 for i in range(nc):
@@ -69,13 +72,13 @@ for i in range(n1):
    D1.append(Count_dist)
 
 A_=np.sum(D0, axis=0)
-A=[a/nc/N for a in A_]
+A=[FD((a)/nc/N) for a in A_]
 
 A1_=np.sum(D1, axis=0)
-A1=[a/n1/N1 for a in A1_]
+A1=[FD((a)/n1/N1) for a in A1_]
 
-Len=[i for i in range(-1,N+1)]
-Len1=[i for i in range(-1,N1+1)]
+Len=[FD(i) for i in range(1,N+1)]
+Len1=[FD(i) for i in range(1,N1+1)]
 
 l1,l2=954,985
 
@@ -92,8 +95,8 @@ def fg(x,a,b,s):
 
 O1=[0 for v in Len1]
 
-plt.plot(Len[2:], A[2:], 'rd')
-plt.plot(Len1[2:], A1[2:], 'bd')
+plt.plot(Len[0:], A[2:], 'rd')
+plt.plot(Len1[0:], A1[2:], 'bd')
 # plt.plot(X, Fit, 'g', linewidth='3')
 plt.plot(Len1, O1, 'g', linewidth='3')
 plt.show()
