@@ -270,7 +270,7 @@ int main() {
 
     std::vector<int> Distance;
 
-    ofstream outputFile("Len_dist_b1_L51_p100.csv", ios_base::app);
+    ofstream outputFile("Len_dist_b1_5000_L101_Trig_p50.csv", ios_base::app);
     if (!outputFile.is_open()) {
         cerr << "Error: Could not open results.csv for writing." << endl;
         return 1;
@@ -281,11 +281,11 @@ int main() {
     initializeMatchings();
 
     double Ensemble = 500;
-    double runs = 1000;
-    int N = 51, M = 51;
+    double runs = 10000;
+    int N = 101, M = 101;
 
     auto start = chrono::high_resolution_clock::now();
-    int x10 = 2000, x20 = Dimer_identifier(2000, Matching0); // Updated initial Matching_0 
+    int x10 = 2000, x20 = Dimer_identifier(2000, Matching0); // Updated initial Matching_0, starting location does not matter  
     vector<int> rev10 = Rev_Enum(x10, N, M);
     int X10 = rev10[0], Y10 = rev10[1];
 
@@ -311,12 +311,12 @@ int main() {
 
             length += 1;
 
-            Matching.erase(std::remove_if(Matching.begin(), Matching.end(),
+            Matching.erase(std::remove_if(Matching.begin(), Matching.end(), //Remove the old dimer 
                 [&](const std::vector<int>& pair) {
                     return (pair == std::vector<int>{x1, x2} || pair == std::vector<int>{x2, x1});
                 }), Matching.end());
                 
-            Matching.push_back({x2, c1});
+            Matching.push_back({x2, c1}); //Create the new dimer 
             Matching.push_back({c1, x2});
 
             x1=c1;
@@ -350,15 +350,15 @@ int main() {
         //Fix the issue of odd length and +-1 counting for cx,cy in some cases. These arises only in (0,0) Homology class.
         double Wx=cx/N, Wy=cy/M;
 
-        if((length<runs)){     
+        if(x1==x10){  
             if ((static_cast<int>(Wx) % 2 == 0) && (static_cast<int>(Wy) % 2 == 0)) {
                 //cout<< length<< "," << x1 << "," << x2 << ","<< Wx << "," <<Wy<< endl;
-                outputFile << length << "\t";
+                outputFile << length << "\t"; //Loops in the even, even Homology class
             }else{
-                outputFile << -1 << "\t";
+                outputFile << 0 << "\t"; //Loops in the wrong Homology classes
             }
         }else{
-            outputFile << -1 << "\t";
+            outputFile << -1 << "\t"; //The wormhead does not come to the intial defect points
         }
 
     }
